@@ -27,10 +27,15 @@
 ````java
 public class ExamplePlugin extends AbstractJavaPlugin<ExampleUser> {
 
-    public void onEnable() {
-        super.onEnable(); // Important, the super onEnable initializes the library
-        setUserFactory((player) -> new ExampleUser(this, player)); // Set the user factory
-    }   
+    @Override
+    public void onAbstractEnable() {
+        // Things to call when the plugin gets enabled
+    } 
+    
+    @Override
+    public UserFactory<ExampleUser> getUserFactory() {
+        return player -> new ExampleUser(this, player); // Set the user factory
+    }
     
     // Test method to show some utilities
     public void sendMessageToUser(Player player) {
@@ -59,16 +64,25 @@ public class ExampleUser extends User {
 ````
 
 ## Localization
+### General usage
 This api supports also the use of localized messages - That means, the player is able to retrieve message in the language of his client.
 To start, simple create a folder called `lang` under src/main/resources. Inside this folder create your language files, e.g. `en_US.properties` or `de_DE.properties`.
 <br />
 An example language file might look like this:
 ````properties
 prefix = MyCoolPlugin >
-test-message = %prefix% &6Hello {0}
+test-message = %prefix% &6Hello {0}, the current time is: {1}
 ````
-The ``%prefix`` is the only placeholder which gets replaced. The `{0}` defines parameters, which are passes in the `sendMessage()` method.
+The ``%prefix%`` parameter is the only placeholder that gets replaced with the defined ``prefix`` locale string. The `{0}`,`{1}`,`{n}`, ... defines parameters, which are passes in the `sendMessage()` method.
 
+### Using localization when a player joins
+Because the ``PlayerJoinEvent`` gets called before the server recieves the language information from the client, localization does not work with this particular event. If you need localization when a player joins the server (e.g. for a join message or some hotbar items), you can use the ``PlayerReadyEvent<ExampleUser>``, which gets fired slightly after the ``PlayerJoinEvent``, as soon as the language has been initialized. 
+````java
+@EventHandler
+public void onPlayerReady(PlayerReadyEvent<ExampleUser> event) {
+    event.getUser().sendMessage("your-welcome-message");
+}
+````
 
 ## ToDo
  + More Documentation incl Hosted Javadocs
