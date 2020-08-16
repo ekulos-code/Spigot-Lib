@@ -37,5 +37,4 @@ public class SkullItemFactory extends ItemFactory<SkullMeta> {
         }
         return this;
     }
-
 }

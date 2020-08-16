@@ -3,6 +3,7 @@ package de.pierreschwang.spigotlib.inventory;
 import de.pierreschwang.spigotlib.item.ItemFactory;
 import de.pierreschwang.spigotlib.nms.NmsHelper;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryType;
@@ -21,19 +22,19 @@ public class SimpleInventory {
     private Consumer<Player> inventoryCloseListener = (player) -> {
     };
 
-    SimpleInventory(int size, String title) {
+    public SimpleInventory(int size, String title) {
         inventory = Bukkit.createInventory(null, size, title);
     }
 
-    SimpleInventory(int size) {
+    public SimpleInventory(int size) {
         inventory = Bukkit.createInventory(null, size);
     }
 
-    SimpleInventory(InventoryType type) {
+    public SimpleInventory(InventoryType type) {
         inventory = Bukkit.createInventory(null, type);
     }
 
-    SimpleInventory(InventoryType type, String title) {
+    public SimpleInventory(InventoryType type, String title) {
         inventory = Bukkit.createInventory(null, type, title);
     }
 
@@ -49,6 +50,7 @@ public class SimpleInventory {
 
     public void setTitle(String title, Player... players) {
         try {
+            ItemFactory.wrap(new ItemStack(Material.SADDLE)).name("Test").apply();
             Class<?> chatMessageClass = NmsHelper.getNmsClass("ChatMessage");
             if (chatMessageClass == null)
                 return;
@@ -92,7 +94,7 @@ public class SimpleInventory {
     }
 
     public SimpleInventory fill(int beginning, int end, ItemStack item) {
-        for (int i = beginning; i < end; i++) {
+        for (int i = beginning; i <= end; i++) {
             setItem(i, item);
         }
         return this;

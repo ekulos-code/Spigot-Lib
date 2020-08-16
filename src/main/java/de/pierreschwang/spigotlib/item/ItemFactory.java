@@ -4,7 +4,10 @@ import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.FireworkEffectMeta;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.LeatherArmorMeta;
+import org.bukkit.inventory.meta.SkullMeta;
 
 import java.util.Arrays;
 import java.util.List;
@@ -12,7 +15,7 @@ import java.util.List;
 public class ItemFactory<T extends ItemMeta> {
 
     private final ItemStack itemStack;
-    private final T meta;
+    private T meta;
 
     public ItemFactory(ItemStack itemStack) {
         this.itemStack = itemStack;
@@ -39,6 +42,42 @@ public class ItemFactory<T extends ItemMeta> {
 
     public static FireworkChargeItemFactory fireworkCharge() {
         return new FireworkChargeItemFactory(new ItemStack(Material.FIREWORK_CHARGE));
+    }
+
+    public static ItemFactory<ItemMeta> wrap(ItemStack itemStack) {
+        return ItemFactory.create(itemStack.getType(), itemStack.getDurability()).amount(itemStack.getAmount()).meta(itemStack.getItemMeta());
+    }
+
+    public static LeatherItemFactory wrapLeather(ItemStack itemStack) {
+        if(!itemStack.getType().name().startsWith("LEATHER_")) {
+            throw new UnsupportedOperationException("You must provide a LEATHER_[...] ItemStack type for method 'ItemFactory.wrapLeather(...)'");
+        }
+        LeatherItemFactory leatherItemFactory = ItemFactory.leather(itemStack.getType());
+        leatherItemFactory.meta((LeatherArmorMeta) itemStack.getItemMeta());
+        return leatherItemFactory;
+    }
+
+    public static SkullItemFactory wrapSkull(ItemStack itemStack) {
+        if(!itemStack.getType().equals(Material.SKULL_ITEM)) {
+            throw new UnsupportedOperationException("You must provide a SKULL_ITEM ItemStack type for method 'ItemFactory.wrapLeather(...)'");
+        }
+        SkullItemFactory skullItemFactory = ItemFactory.skull();
+        skullItemFactory.amount(itemStack.getAmount()).meta((SkullMeta) itemStack.getItemMeta());
+        return skullItemFactory;
+    }
+
+    public static FireworkChargeItemFactory wrapFireworkCharge(ItemStack itemStack) {
+        if(!itemStack.getType().equals(Material.FIREWORK_CHARGE)) {
+            throw new UnsupportedOperationException("You must provide a FIREWORK_CHARGE ItemStack type for method 'ItemFactory.wrapLeather(...)'");
+        }
+        FireworkChargeItemFactory fireworkChargeItemFactory = ItemFactory.fireworkCharge();
+        fireworkChargeItemFactory.amount(itemStack.getAmount()).meta((FireworkEffectMeta) itemStack.getItemMeta());
+        return fireworkChargeItemFactory;
+    }
+
+    public ItemFactory<T> meta(T meta) {
+        this.meta = meta;
+        return this;
     }
 
     public ItemFactory<T> amount(int amount) {
@@ -79,7 +118,7 @@ public class ItemFactory<T extends ItemMeta> {
         return this.itemStack;
     }
 
-    T getMeta() {
+    public T getMeta() {
         return meta;
     }
 }

@@ -91,7 +91,7 @@ public class LanguageHandler {
 
     private void synchronize(BufferedReader template, Path current) {
         try (final BufferedWriter writer = new BufferedWriter(new FileWriter(current.toFile(), true));
-             final BufferedReader reader = new BufferedReader(new FileReader(current.toFile()))) {
+            final BufferedReader reader = new BufferedReader(new FileReader(current.toFile()))) {
             final Properties properties = new Properties();
             properties.load(template);
             final Properties curr = new Properties();

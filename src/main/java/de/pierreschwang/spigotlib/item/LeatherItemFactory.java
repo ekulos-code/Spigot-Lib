@@ -14,5 +14,4 @@ public class LeatherItemFactory extends ItemFactory<LeatherArmorMeta> {
         getMeta().setColor(color);
         return this;
     }
-
 }
